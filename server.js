@@ -1,13 +1,14 @@
 const express = require('express');
 const logger = require('morgan');
 const cors = require('cors');
+require('dotenv').config();
 
 const indexRouter = require('./routes/index');
 
 const app = express();
-require('dotenv').config();
-
 const port = 8080;
+
+require('./config/db');
 
 app.use(logger('dev'));
 app.use(cors());
