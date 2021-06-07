@@ -1,0 +1,16 @@
+{
+  "name": "morta-kodo-api",
+  "version": "1.0.0",
+  "description": "Morta Kodo API for blogs, events, and profiles. ",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "api",
+    "blog",
+    "education"
+  ],
+  "author": "Brandon Robert Myers",
+  "license": "ISC"
+}
