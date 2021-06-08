@@ -13,7 +13,8 @@ const userSchema = new Schema({
         unique: true
     },
     password: String,
-    profilePicturePath: String,
+    isAdmin: Boolean,
+    // profilePicturePath: String,
     biography: String,
     techSkills: [String]
 }, 
