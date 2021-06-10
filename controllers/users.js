@@ -1,10 +1,16 @@
 const User = require('../models/user');
 const jwt = require('jsonwebtoken');
+const randomstring = require('randomstring');
+const { sendMail } = require('../utils/verification')
 const SECRET = process.env.SECRET;
 
 async function signup(req, res) {
   
+  
   const user = new User(req.body);
+  const verifString = randomstring.generate(20);
+  user.verifString = verifString;
+
   // Minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character
   const regex = new RegExp('^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$');
   
@@ -17,7 +23,8 @@ async function signup(req, res) {
     await user.save();
     // Send back a JWT and the User
     const token = createJWT(user);
-    res.json({ token, user });
+    sendMail(req.body.email, verifString);
+    // res.json({ token, user });
   } catch (err) {
     // Probably a duplicate email
     res.status(400).json(err);
@@ -43,6 +50,20 @@ async function login(req, res) {
   }
 }
 
+async function verifyAccount(req, res) {
+  
+  const { verificationCode } = req.params;
+  const user = await User.findOne({ verificationCode: verifString });
+
+  if (user) {
+    user.accountVerified = true;
+    await user.save();
+  } else {
+    res.json('User not found. ');
+  }
+
+}
+
 function createJWT(user) {
   return jwt.sign(
     { user }, // data payload
@@ -54,4 +75,5 @@ function createJWT(user) {
 module.exports = {
   signup,
   login,
+  verifyAccount
 };

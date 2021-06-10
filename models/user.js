@@ -16,7 +16,12 @@ const userSchema = new Schema({
     isAdmin: Boolean,
     // profilePicturePath: String,
     biography: String,
-    techSkills: [String]
+    techSkills: [String],
+    accountVerified: {
+      type: String,
+      default: false
+    },
+    verifString: String
 }, 
 {
     timestamps: true
