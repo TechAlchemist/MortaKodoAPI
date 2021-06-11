@@ -12,8 +12,18 @@ async function createNewBlog(req, res) {
 }
 
 async function getAllBlogs(req, res) {
+    let sliceArray = false;
+    if (req.query.page && req.query.limit) {
+        const page = req.query.page;
+        const limit = req.query.limit;
+        // scoped as var to reach slice in find
+        var startIndex = (page - 1) * limit;
+        var endIndex = page * limit;
+        sliceArray = true;
+    }
     Blog.find({}, (error, articles) => {
         if (error) return res.send(500).json('Error fetching blogs.');
+        if (sliceArray) articles = articles.slice(startIndex, endIndex)
         return res.status(200).json(articles);
     });
 }
