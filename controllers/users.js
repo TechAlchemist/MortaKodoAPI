@@ -5,8 +5,6 @@ const { sendMail } = require('../utils/verification')
 const SECRET = process.env.SECRET;
 
 async function signup(req, res) {
-  
-  
   const user = new User(req.body);
   const verifString = randomstring.generate(20);
   user.verifString = verifString;
@@ -33,8 +31,6 @@ async function signup(req, res) {
 
 async function login(req, res) {
   try {
-    console.log('req.body.password: ' + req.body.password);
-
     const user = await User.findOne({ email: req.body.email });
     if (!user) return res.status(401).json({ err: "bad credentials" });
     user.comparePassword(req.body.password, (err, isMatch) => {
@@ -51,7 +47,6 @@ async function login(req, res) {
 }
 
 async function verifyAccount(req, res) {
-
   const { verificationCode } = req.params;
   const user = await User.findOne({ verifString: verificationCode });
 
