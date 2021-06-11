@@ -1,7 +1,6 @@
 const nodemailer = require('nodemailer');
 
 const sendMail = (email, uniqueString) => {
-    console.log('send mail process has begun')
     const transport = nodemailer.createTransport({
         service: 'outlook',
         auth: {
@@ -15,14 +14,14 @@ const sendMail = (email, uniqueString) => {
         from: sender,
         to: email,
         subject: 'Morta Kodo: Email Confirmation',
-        html: `Press <a href=http://localhost:8080/verify/${uniqueString}> here </a> to verify your email. `
+        html: `Press <a href=http://localhost:8080/api/v1/auth/verify/${uniqueString}> here </a> to verify your email. `
     };
 
     transport.sendMail(mailOptions, (error, response) => {
         if (error) {
             console.log(error);
         } else {
-            console.log('Message sent. \n' + response);
+            console.log('Message sent. \n' + JSON.stringify(response));
         }
     });
 

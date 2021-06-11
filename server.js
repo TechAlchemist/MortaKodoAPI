@@ -16,6 +16,6 @@ app.use(cors());
 app.use(express.json());
 
 app.use('/', indexRouter);
-app.use('/api/vi/auth/', userRouter);
+app.use('/api/v1/auth/', userRouter);
 
 app.listen(port, console.log(`Server online. http://localhost:${port}`))

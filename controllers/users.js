@@ -24,7 +24,7 @@ async function signup(req, res) {
     // Send back a JWT and the User
     const token = createJWT(user);
     sendMail(req.body.email, verifString);
-    // res.json({ token, user });
+    res.json({ token, user });
   } catch (err) {
     // Probably a duplicate email
     res.status(400).json(err);
@@ -51,13 +51,14 @@ async function login(req, res) {
 }
 
 async function verifyAccount(req, res) {
-  
+
   const { verificationCode } = req.params;
-  const user = await User.findOne({ verificationCode: verifString });
+  const user = await User.findOne({ verifString: verificationCode });
 
   if (user) {
     user.accountVerified = true;
     await user.save();
+    res.json('Account validated. ' + user.firstName + ' is now an active user. ');
   } else {
     res.json('User not found. ');
   }
