@@ -1,15 +1,21 @@
 const Blog = require('../models/blog');
+const User = require('../models/user');
+const { authRequest } = require('../utils/api-auth');
 
 async function createNewBlog(req, res) {
+    const authorizied = await authRequest(req.headers['user-id'])
+    if (!authorizied) return res.status(403).json('Could not authenticate request.'); 
+
     const blog = new Blog(req.body);
     try {
         blog.save();
-        return res.status(201).json('Blog was created. Very cool!');
+        return res.status(201).json('Blog was created.');
     } 
     catch(error) {
-        return res.status(500).json('OH GOD! OH NOOO! WE FAILED TO CREATE THE ASSET!');
+        return res.status(500).json('Failed to create blog article.');
     }
-}
+    } 
+
 
 async function getAllBlogs(req, res) {
     let sliceArray = false;
@@ -23,7 +29,7 @@ async function getAllBlogs(req, res) {
     }
     Blog.find({}, (error, articles) => {
         results.results = articles;
-        if (error) return res.send(500).json('Error fetching blogs.');
+        if (error) return res.send(500).json('Failed to retrieve articles.');
         // format data for pagination
         if (sliceArray) {
             results.results = articles.slice(startIndex, endIndex);
@@ -52,16 +58,20 @@ async function getBlog(req, res) {
 }
 
 async function deleteBlog(req, res) {
+    const authorizied = await authRequest(req.headers['user-id'])
+    if (!authorizied) return res.status(403).json('Could not authenticate request.'); 
     Blog.deleteOne({ _id: req.params.id}, (error) => {
         if (error) return res.status(500).json(error);
-        return res.status(200).json('Blog article deleted.');
+        return res.status(200).json('Blog article was deleted.');
     });
 }
 
 async function updateBlog(req, res) {
+    const authorizied = await authRequest(req.headers['user-id'])
+    if (!authorizied) return res.status(403).json('Could not authenticate request.'); 
     Blog.findOneAndUpdate(req.params.id, req.body, {useFindAndModify: false}, (error, article) => {
-        if (error) res.status(500).json('error');
-        return res.status(200).json('updated')
+        if (error) res.status(500).json('Failed to update blog.');
+        return res.status(200).json('Blog article was updated.')
    });
     
 }
