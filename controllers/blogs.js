@@ -3,9 +3,8 @@ const User = require('../models/user');
 const { authRequest } = require('../utils/api-auth');
 
 async function createNewBlog(req, res) {
-    const authorizied = await authRequest(req.headers['user-id'])
+    const authorizied = await authRequest(req.headers['user-id']);
     if (!authorizied) return res.status(403).json('Could not authenticate request.'); 
-
     const blog = new Blog(req.body);
     try {
         blog.save();
@@ -14,8 +13,7 @@ async function createNewBlog(req, res) {
     catch(error) {
         return res.status(500).json('Failed to create blog article.');
     }
-    } 
-
+} 
 
 async function getAllBlogs(req, res) {
     let sliceArray = false;
@@ -58,7 +56,7 @@ async function getBlog(req, res) {
 }
 
 async function deleteBlog(req, res) {
-    const authorizied = await authRequest(req.headers['user-id'])
+    const authorizied = await authRequest(req.headers['user-id']);
     if (!authorizied) return res.status(403).json('Could not authenticate request.'); 
     Blog.deleteOne({ _id: req.params.id}, (error) => {
         if (error) return res.status(500).json(error);
@@ -67,11 +65,11 @@ async function deleteBlog(req, res) {
 }
 
 async function updateBlog(req, res) {
-    const authorizied = await authRequest(req.headers['user-id'])
+    const authorizied = await authRequest(req.headers['user-id']);
     if (!authorizied) return res.status(403).json('Could not authenticate request.'); 
     Blog.findOneAndUpdate(req.params.id, req.body, {useFindAndModify: false}, (error, article) => {
         if (error) res.status(500).json('Failed to update blog.');
-        return res.status(200).json('Blog article was updated.')
+        return res.status(200).json('Blog article was updated.');
    });
     
 }
