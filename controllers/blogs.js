@@ -52,7 +52,17 @@ async function getBlog(req, res) {
     Blog.find({ _id: req.params.id}, (error, article) => {
         if (error) return res.status(500).json('Failed to retrive article.');
         return res.status(200).json(article);
-    })
+    });
+}
+
+async function updateBlog(req, res) {
+    const authorizied = await authRequest(req.headers['user-id']);
+    if (!authorizied) return res.status(403).json('Could not authenticate request.'); 
+    Blog.findByIdAndUpdate(req.params.id, req.body, {useFindAndModify: false}, (error, article) => {
+        if (error) res.status(500).json('Failed to update blog.');
+        return res.status(200).json('Blog article was updated.');
+   });
+    
 }
 
 async function deleteBlog(req, res) {
@@ -64,20 +74,11 @@ async function deleteBlog(req, res) {
     });
 }
 
-async function updateBlog(req, res) {
-    const authorizied = await authRequest(req.headers['user-id']);
-    if (!authorizied) return res.status(403).json('Could not authenticate request.'); 
-    Blog.findOneAndUpdate(req.params.id, req.body, {useFindAndModify: false}, (error, article) => {
-        if (error) res.status(500).json('Failed to update blog.');
-        return res.status(200).json('Blog article was updated.');
-   });
-    
-}
 
 module.exports = {
     createNewBlog,
     getAllBlogs,
     getBlog,
-    deleteBlog,
-    updateBlog
+    updateBlog,
+    deleteBlog
 }
